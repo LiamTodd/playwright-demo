@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Todo List</title>
 </head>
 <body>
 <h1>My To Do List</h1>
@@ -15,7 +15,7 @@
     <li id="todo-item-{{item.content}}">
         {{item.content}}
     </li>
-    <form id="delete-todo-item-{{item.content}}" action="/deleteTodoItem/{{i.id}}/" method = "post">{% csrf_token %}
+    <form id="delete-todo-item-{{item.content}}" action="/deleteTodoItem/{{item.pk}}/" method = "post">{% csrf_token %}
             <input type="submit" value="Delete">
     </form>
     {% endfor %}

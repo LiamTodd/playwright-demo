@@ -27,7 +27,7 @@
    - Installs the sync and async APIs
 2. `playwright install`
    - Installs web browsers
-     - Chromium, Webpack, Firefox
+     - Chromium, Webkit, Firefox
 ##### FYI:
 Installing playwright on DERMS required us to install an additional linux package (libasound2) on our base image.
 ### Writing tests
@@ -115,6 +115,36 @@ setUpClass(cls):
     ...
     call_command("collectstatic", interactive=False)
 ```
+#### Separation from unit tests
+- Prefix all test cases with `e2e_test`
+
+##### Integration tests:
+```
+./manage.py test --pattern="e2e_test_*.py"
+```
+##### Unit tests
+```
+./manage.py test --exclude="e2e_test_*.py"
+```
+
+### Playwright in CI
+Added two steps to the test stage of our pipeline:
+```
+- docker-compose run front_end npm run build
+- docker-compose run django RUN_PLAYWRIGHT_HEADLESS=True ./manage.py test --pattern="e2e_test*.py"
+```
+#### Performance
+- Running 27 test methods takes around 200 seconds locally
+  - Scales quite linearly with the number of tests, so parallelization would become important as more tests are written
+- The time varies significantly on the pipeline
+- Currently, our pipeline runs in 10-13 minutes with 27 test methods
+  - 2-4 minute increase
+- There SEEMs to be ways to parallelize tests, however we are yet to do so on DERMS
+  - https://docs.djangoproject.com/en/4.1/topics/testing/overview/#speeding-up-the-tests
+  - https://playwright.dev/python/docs/test-parallel :(
+    - Although parallelization is supported for the Node package
+
+
 <br><br><br>
 <p>*</p>
 
